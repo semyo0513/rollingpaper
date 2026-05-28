@@ -72,7 +72,8 @@ const currentCharCount = document.getElementById('current-char-count');
 // Dynamic Socket.io loader
 function loadSocketIO(callback) {
   const isFileProtocol = window.location.protocol === 'file:';
-  const serverUrl = isFileProtocol ? 'http://localhost:3000' : window.location.origin;
+  const isGitHubPages = window.location.hostname.endsWith('.github.io');
+  const serverUrl = (isFileProtocol || isGitHubPages) ? 'http://localhost:3000' : window.location.origin;
 
   if (typeof io === 'undefined') {
     console.log('Loading socket.io client from CDN...');
