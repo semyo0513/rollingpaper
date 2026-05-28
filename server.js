@@ -60,9 +60,7 @@ const DEFAULT_QUESTIONS = [
   "우리 반 친구들과 선생님에게 하고 싶은 응원의 한마디! 🌟"
 ];
 
-// Serve static files from 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-// Serve static files from root directory (to support references to images directly in the root)
+// Serve static files from root directory
 app.use(express.static(__dirname));
 
 // API Endpoint to check if a room code exists
