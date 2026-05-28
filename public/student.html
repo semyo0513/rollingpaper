@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎈 롤링페이퍼 작성하기</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Outfit:wght@300;400;600;800&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="student-body">
+  <div class="blob-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="student-container">
+    <!-- Step 1: Nickname Entry -->
+    <section id="step-nickname" class="card glassmorphism-card text-center nickname-step">
+      <h2 class="card-title">롤링페이퍼 참여</h2>
+      <p class="card-desc">보드에 표시될 이름을 작성해 주세요.</p>
+      <div class="form-group">
+        <input 
+          type="text" 
+          id="nickname-input" 
+          maxlength="10" 
+          placeholder="닉네임 (최대 10자)" 
+          autocomplete="off"
+          required
+        >
+      </div>
+      <button onclick="saveNickname()" class="btn btn-primary btn-full ripple">디자인 꾸미기 시작 ➔</button>
+    </section>
+
+    <!-- Step 2: Write & Design Card -->
+    <section id="step-editor" class="editor-layout hidden">
+      <!-- Top header showing Room code and Active Question -->
+      <header class="student-header card glassmorphism-card">
+        <div class="header-room-info">
+          <span class="room-badge">PIN: <strong id="room-code-badge">0000</strong></span>
+          <span class="status-indicator live">실시간 연결됨</span>
+        </div>
+        <h2 id="active-question-text" class="question-display">질문을 불러오는 중...</h2>
+      </header>
+
+      <!-- Preview Panel (Sticky/Top on mobile) -->
+      <div class="preview-panel">
+        <h3 class="panel-section-title">미리보기</h3>
+        <div class="preview-canvas">
+          <!-- The actual card preview -->
+          <div id="card-preview" class="rolling-card card-postit font-handwriting" style="background-color: #fff9c4;">
+            <div class="tape-effect"></div>
+            <div class="card-stickers" id="preview-stickers"></div>
+            <div class="card-body">
+              <p id="preview-content" class="card-text">여기에 내용을 적어주세요. 멋진 롤링페이퍼 카드가 완성됩니다! ✨</p>
+            </div>
+            <div class="card-footer">
+              <span id="preview-nickname" class="card-author">From. 익명</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor Panel (Controls) -->
+      <div class="editor-controls-card card glassmorphism-card">
+        <h3 class="panel-section-title">메시지 작성</h3>
+        
+        <!-- Textarea input -->
+        <div class="form-group">
+          <textarea 
+            id="message-input" 
+            maxlength="150" 
+            placeholder="마음을 담은 메시지를 입력해 주세요 (최대 150자)" 
+            oninput="updatePreviewText()"
+          ></textarea>
+          <div class="char-count"><span id="current-char-count">0</span> / 150</div>
+        </div>
+
+        <!-- Style Customizer Tabs/Sliders -->
+        <div class="customizer-sections">
+          <!-- 1. Theme Selection -->
+          <div class="custom-group">
+            <h4 class="custom-title">1. 디자인 테마</h4>
+            <div class="theme-picker">
+              <button onclick="setTheme('postit')" class="theme-btn active" id="theme-postit">
+                <span class="theme-icon">📌</span> 포스트잇
+              </button>
+              <button onclick="setTheme('chalkboard')" class="theme-btn" id="theme-chalkboard">
+                <span class="theme-icon">✏️</span> 칠판 메모
+              </button>
+              <button onclick="setTheme('balloon')" class="theme-btn" id="theme-balloon">
+                <span class="theme-icon">💬</span> 말풍선
+              </button>
+              <button onclick="setTheme('notebook')" class="theme-btn" id="theme-notebook">
+                <span class="theme-icon">📖</span> 찢어진 노트
+              </button>
+              <button onclick="setTheme('neon')" class="theme-btn" id="theme-neon">
+                <span class="theme-icon">⚡</span> Y2K 네온
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Color Selection -->
+          <div class="custom-group">
+            <h4 class="custom-title">2. 색상</h4>
+            <div class="color-picker" id="color-palette">
+              <!-- Colors populated by JS based on theme -->
+            </div>
+          </div>
+
+          <!-- 3. Font Selection -->
+          <div class="custom-group">
+            <h4 class="custom-title">3. 글꼴</h4>
+            <div class="font-picker">
+              <button onclick="setFont('Nanum Pen Script')" class="font-btn active" id="font-nanum" style="font-family: 'Nanum Pen Script';">손글씨</button>
+              <button onclick="setFont('Gamja Flower')" class="font-btn" id="font-gamja" style="font-family: 'Gamja Flower';">아기자기</button>
+              <button onclick="setFont('Jua')" class="font-btn" id="font-jua" style="font-family: 'Jua';">동글동글</button>
+              <button onclick="setFont('Outfit')" class="font-btn" id="font-gothic" style="font-family: 'Outfit';">깔끔고딕</button>
+            </div>
+          </div>
+
+          <!-- 4. Sticker / Decoration Selection -->
+          <div class="custom-group">
+            <div class="sticker-header">
+              <h4 class="custom-title">4. 스티커 꾸미기</h4>
+              <button onclick="clearStickers()" class="btn-clear-stickers">초기화</button>
+            </div>
+            <div class="sticker-picker">
+              <button onclick="addSticker('❤️')" class="sticker-btn">❤️</button>
+              <button onclick="addSticker('⭐')" class="sticker-btn">⭐</button>
+              <button onclick="addSticker('🎉')" class="sticker-btn">🎉</button>
+              <button onclick="addSticker('👍')" class="sticker-btn">👍</button>
+              <button onclick="addSticker('💡')" class="sticker-btn">💡</button>
+              <button onclick="addSticker('🍀')" class="sticker-btn">🍀</button>
+              <button onclick="addSticker('🔥')" class="sticker-btn">🔥</button>
+              <button onclick="addSticker('🐱')" class="sticker-btn">🐱</button>
+              <button onclick="addSticker('✨')" class="sticker-btn">✨</button>
+              <button onclick="addSticker('🌸')" class="sticker-btn">🌸</button>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="submitResponse()" class="btn btn-primary btn-full btn-large ripple submit-btn">
+          🚀 메시지 보내기!
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 3: Success Screen -->
+    <section id="step-success" class="card glassmorphism-card text-center success-step hidden">
+      <div class="success-plane-animation">✈️</div>
+      <h2 class="card-title">성공적으로 보냈습니다!</h2>
+      <p class="card-desc">작성한 롤링페이퍼가 프리젠테이션 화면으로 날아갔습니다.</p>
+      
+      <div class="success-actions">
+        <button onclick="resetEditor()" class="btn btn-primary btn-full ripple">추가 작성하기</button>
+        <button onclick="goHome()" class="btn btn-secondary btn-full ripple">홈으로 가기</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- Client Javascript -->
+  <script src="app.js"></script>
+</body>
+</html>

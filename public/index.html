@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎈 실시간 인터랙티브 롤링페이퍼</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Outfit:wght@300;400;600;800&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="landing-body">
+  <!-- Interactive Background Blobs -->
+  <div class="blob-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <main class="landing-container">
+    <header class="landing-header">
+      <div class="logo-emoji">🎈</div>
+      <h1 class="logo-text">Rolling Paper</h1>
+      <p class="logo-subtext">실시간 마음을 나누는 롤링페이퍼</p>
+    </header>
+
+    <!-- Student Join Card -->
+    <section class="card glassmorphism-card text-center" id="join-card">
+      <h2 class="card-title">롤링페이퍼 참여하기</h2>
+      <p class="card-desc">교사에게 받은 4자리 PIN 코드를 입력하세요.</p>
+      
+      <form id="join-form" onsubmit="handleJoin(event)">
+        <div class="pin-input-container">
+          <input 
+            type="text" 
+            id="pin-input" 
+            maxlength="4" 
+            placeholder="0000" 
+            autocomplete="off" 
+            inputmode="numeric" 
+            pattern="[0-9]*"
+            required
+          >
+        </div>
+        <div class="error-msg" id="pin-error"></div>
+        <button type="submit" class="btn btn-primary btn-full ripple">참여 입장하기 ➔</button>
+      </form>
+    </section>
+
+    <!-- Teacher Access / Create Room Option -->
+    <footer class="landing-footer">
+      <p>새로운 롤링페이퍼 보드를 만드시겠습니까?</p>
+      <button onclick="createNewRoom()" class="btn btn-secondary ripple" id="create-btn">
+        <span class="btn-icon">👨‍🏫</span> 교사용 방 만들기
+      </button>
+    </footer>
+  </main>
+
+  <!-- Socket.io library with CDN fallback -->
+  <script>
+    let socket;
+    let serverBaseUrl = '';
+
+    function loadSocketIO(callback) {
+      const isFileProtocol = window.location.protocol === 'file:';
+      const serverUrl = isFileProtocol ? 'http://localhost:3000' : window.location.origin;
+      serverBaseUrl = serverUrl;
+
+      if (typeof io === 'undefined') {
+        console.log('Loading socket.io client from CDN...');
+        const script = document.createElement('script');
+        script.src = 'https://cdn.socket.io/4.7.5/socket.io.min.js';
+        script.onload = () => {
+          try {
+            const socketInstance = io(serverUrl, {
+              transports: ['websocket', 'polling']
+            });
+            callback(socketInstance);
+          } catch (e) {
+            console.error('Socket.io initialization error:', e);
+            alert('실시간 서버 연결 라이브러리를 초기화하지 못했습니다.');
+          }
+        };
+        script.onerror = () => {
+          console.error('CDN script load failed.');
+          alert('Socket.io 라이브러리를 CDN에서 로드하는 데 실패했습니다. 인터넷 연결 상태를 확인해 주세요.');
+        };
+        document.head.appendChild(script);
+      } else {
+        const socketInstance = io(serverUrl);
+        callback(socketInstance);
+      }
+    }
+
+    // Initialize socket connection
+    loadSocketIO((socketInstance) => {
+      socket = socketInstance;
+
+      socket.on('connect', () => {
+        console.log('Connected to server successfully:', serverBaseUrl);
+      });
+
+      socket.on('connect_error', (err) => {
+        console.error('Socket connection error:', err);
+      });
+    });
+
+    const pinInput = document.getElementById('pin-input');
+    const pinError = document.getElementById('pin-error');
+    const joinForm = document.getElementById('join-form');
+
+    // Automatically focus on pin input
+    window.addEventListener('DOMContentLoaded', () => {
+      pinInput.focus();
+    });
+
+    // Handle pin input character filtering (allow only numbers)
+    pinInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+      pinError.textContent = '';
+      
+      // Auto submit if 4 numbers are typed
+      if (e.target.value.length === 4) {
+        joinForm.requestSubmit();
+      }
+    });
+
+    // Handle Join Form Submission
+    async function handleJoin(event) {
+      event.preventDefault();
+      const code = pinInput.value.trim();
+      
+      if (code.length !== 4) {
+        pinError.textContent = '4자리 숫자를 모두 입력해 주세요.';
+        return;
+      }
+
+      try {
+        // Double-check room existence via REST API (pointing to correct base url)
+        const response = await fetch(`${serverBaseUrl}/api/room/${code}`);
+        const data = await response.json();
+        
+        if (data.exists) {
+          // Success! Redirect to student view
+          window.location.href = `./student.html?room=${code}`;
+        } else {
+          pinError.textContent = '방을 찾을 수 없습니다. PIN 코드를 다시 확인해 주세요.';
+        }
+      } catch (err) {
+        pinError.textContent = '실시간 서버에 연결할 수 없습니다. 터미널에서 "node server.js"가 실행 중인지 확인해 주세요.';
+        console.error(err);
+      }
+    }
+
+    // Handle Room Creation for Teachers
+    function createNewRoom() {
+      const createBtn = document.getElementById('create-btn');
+      
+      if (!socket) {
+        alert('실시간 서버 연결을 준비하는 중입니다. 1~2초 후 다시 클릭해 주세요.');
+        return;
+      }
+
+      if (!socket.connected) {
+        alert('실시간 서버(' + serverBaseUrl + ')에 연결할 수 없습니다.\n\n[해결 방법]\n1. VS Code 또는 CMD 터미널에서 "node server.js" 명령어가 실행 중인지 확인하세요.\n2. 방화벽 설정으로 포트(3000)가 열려 있는지 확인하세요.');
+        return;
+      }
+
+      createBtn.disabled = true;
+      createBtn.innerHTML = '<span class="spinner"></span> 방 생성 중...';
+
+      socket.emit('create-room', (res) => {
+        if (res.success) {
+          window.location.href = `./host.html?room=${res.room.code}`;
+        } else {
+          alert('방 생성에 실패했습니다: ' + (res.error || '알 수 없는 오류'));
+          createBtn.disabled = false;
+          createBtn.innerHTML = '<span class="btn-icon">👨‍🏫</span> 교사용 방 만들기';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

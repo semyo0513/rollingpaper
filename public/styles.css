@@ -1,0 +1,1294 @@
+/* ==========================================================================
+   🎈 REAL-TIME ROLLING PAPER APP - PREMIUM DESIGN SYSTEM (VANILLA CSS)
+   ========================================================================== */
+
+/* 1. Global Setup & Fonts */
+:root {
+  --primary: #5c62ec;
+  --primary-hover: #474cd4;
+  --primary-light: #eef2ff;
+  --primary-glow: rgba(92, 98, 236, 0.4);
+  --danger: #ff4757;
+  --danger-hover: #e0303f;
+  --success: #2ed573;
+  --neutral-dark: #2f3542;
+  --neutral-light: #f1f2f6;
+  --glass-bg: rgba(255, 255, 255, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.25);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  --font-handwriting: 'Nanum Pen Script', cursive;
+  --font-cute: 'Gamja Flower', cursive;
+  --font-round: 'Jua', sans-serif;
+  --font-sans: 'Outfit', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+}
+
+body {
+  color: var(--neutral-dark);
+  background-color: #fafbfc;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* 2. Interactive Animated Blob Background */
+.blob-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  overflow: hidden;
+  background: radial-gradient(circle at 10% 20%, #f4f5fc 0%, #eef0fc 90%);
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  animation: float-blob 20s infinite ease-in-out alternate;
+}
+
+.blob-1 {
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background-color: #a5b4fc; /* soft indigo */
+  animation-duration: 25s;
+}
+
+.blob-2 {
+  bottom: -10%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background-color: #fbcfe8; /* soft pink */
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+.blob-3 {
+  top: 40%;
+  left: 30%;
+  width: 40vw;
+  height: 40vw;
+  background-color: #c7d2fe; /* light purple */
+  animation-duration: 22s;
+  animation-delay: -10s;
+}
+
+@keyframes float-blob {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(10%, 15%) scale(1.1) rotate(120deg); }
+  66% { transform: translate(-10%, 5%) scale(0.95) rotate(240deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(360deg); }
+}
+
+/* 3. Utility Components (Cards, Buttons, Spinners) */
+.glassmorphism-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
+  border-radius: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card {
+  padding: 2.5rem;
+  width: 100%;
+}
+
+.text-center { text-align: center; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.75rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  color: white;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--primary-glow);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  color: var(--neutral-dark);
+}
+.btn-secondary:hover {
+  background-color: var(--neutral-light);
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: white;
+}
+.btn-danger:hover {
+  background-color: var(--danger-hover);
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+}
+
+.btn-full { width: 100%; }
+.btn-large { padding: 1.1rem 2rem; font-size: 1.15rem; }
+.btn-sm { padding: 0.5rem 1rem; font-size: 0.9rem; border-radius: 8px; }
+
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 4. Entry Screen (Landing/Index) Styles */
+.landing-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.landing-container {
+  max-width: 440px;
+  width: 100%;
+}
+
+.landing-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.logo-emoji {
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+  animation: logo-bounce 2s ease-in-out infinite;
+  display: inline-block;
+}
+@keyframes logo-bounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+.logo-text {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #4f46e5, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.25rem;
+}
+.logo-subtext {
+  font-size: 1rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+#join-card {
+  margin-bottom: 1.5rem;
+}
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.card-desc {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin-bottom: 2rem;
+}
+
+/* PIN Input box */
+.pin-input-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+#pin-input {
+  width: 220px;
+  height: 64px;
+  font-size: 2.2rem;
+  text-align: center;
+  letter-spacing: 0.5rem;
+  font-weight: 800;
+  border-radius: 16px;
+  border: 2px solid #cbd5e1;
+  background-color: rgba(255, 255, 255, 0.8);
+  outline: none;
+  transition: all 0.3s;
+}
+#pin-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-glow);
+  background-color: white;
+}
+.error-msg {
+  color: var(--danger);
+  font-size: 0.85rem;
+  min-height: 20px;
+  margin-bottom: 1rem;
+}
+
+.landing-footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+.landing-footer p {
+  margin-bottom: 0.75rem;
+}
+
+/* ==========================================================================
+   👥 STUDENT SIDE STYLES (student.html)
+   ========================================================================== */
+.student-body {
+  padding: 1.5rem 1rem;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.student-container {
+  max-width: 760px;
+  width: 100%;
+}
+
+.nickname-step {
+  max-width: 440px;
+  margin: 10vh auto;
+}
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+#nickname-input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  background-color: rgba(255,255,255,0.7);
+  transition: border 0.2s;
+  text-align: center;
+  font-weight: 600;
+}
+#nickname-input:focus {
+  border-color: var(--primary);
+  background-color: white;
+}
+
+/* Editor Layout Grid */
+.editor-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 768px) {
+  .editor-layout {
+    grid-template-columns: 1.1fr 1fr;
+  }
+  .student-header {
+    grid-column: 1 / span 2;
+  }
+}
+
+.student-header {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.header-room-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.room-badge {
+  background-color: var(--neutral-dark);
+  color: white;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+.room-badge strong {
+  letter-spacing: 1px;
+}
+.status-indicator {
+  font-size: 0.85rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-indicator::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #cbd5e1;
+}
+.status-indicator.live::before {
+  background-color: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: blink 1.5s infinite;
+}
+@keyframes blink {
+  50% { opacity: 0.4; }
+}
+
+.question-display {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--neutral-dark);
+  border-left: 4px solid var(--primary);
+  padding-left: 0.75rem;
+}
+
+/* Card Preview Box */
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+}
+.panel-section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.preview-canvas {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2.5rem;
+  min-height: 280px;
+}
+
+/* Editor Input & Controls */
+.editor-controls-card {
+  padding: 1.5rem;
+}
+#message-input {
+  width: 100%;
+  height: 120px;
+  padding: 1rem;
+  font-size: 1.05rem;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  resize: none;
+  outline: none;
+  background-color: rgba(255,255,255,0.7);
+  transition: all 0.2s;
+}
+#message-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+  background-color: white;
+}
+.char-count {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.35rem;
+}
+
+/* Style Section Customizers */
+.customizer-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+.custom-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.custom-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+/* 1. Theme Button Picker */
+.theme-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.theme-btn {
+  padding: 0.65rem 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+.theme-btn:hover {
+  background-color: var(--neutral-light);
+}
+.theme-btn.active {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+  color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+.theme-icon {
+  font-size: 1.2rem;
+}
+
+/* 2. Color Palettes */
+.color-picker {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.color-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.2s, border 0.2s;
+  position: relative;
+}
+.color-dot:hover {
+  transform: scale(1.15);
+}
+.color-dot.active {
+  transform: scale(1.1);
+  border: 2px solid var(--neutral-dark);
+}
+
+/* 3. Font Buttons */
+.font-picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+.font-btn {
+  padding: 0.5rem 0.25rem;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+.font-btn.active {
+  background-color: var(--neutral-dark);
+  color: white;
+  border-color: var(--neutral-dark);
+}
+
+/* 4. Stickers */
+.sticker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.btn-clear-stickers {
+  font-size: 0.8rem;
+  color: #64748b;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.btn-clear-stickers:hover { color: var(--danger); }
+.sticker-picker {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding: 0.2rem 0;
+}
+.sticker-btn {
+  font-size: 1.6rem;
+  padding: 0.3rem;
+  border-radius: 8px;
+  border: 1px solid #f1f2f6;
+  background-color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sticker-btn:hover {
+  background-color: white;
+  transform: scale(1.2) rotate(5deg);
+}
+
+.hidden { display: none !important; }
+
+/* Success Step */
+.success-step {
+  max-width: 440px;
+  margin: 10vh auto;
+  animation: scaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes scaleUp {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.success-plane-animation {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  animation: plane-fly 2s infinite ease-in-out;
+}
+@keyframes plane-fly {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  50% { transform: translate(20px, -20px) rotate(10deg); }
+}
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+
+/* ==========================================================================
+   🎨 ROLLING CARD STYLES & TEMPLATES
+   ========================================================================== */
+.rolling-card {
+  position: relative;
+  width: 250px;
+  min-height: 250px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  cursor: grab;
+  user-select: none;
+  transform-origin: center center;
+  transition: transform 0.15s, box-shadow 0.15s;
+  word-wrap: break-word;
+}
+.rolling-card:hover {
+  box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+}
+.rolling-card:active {
+  cursor: grabbing;
+}
+
+/* Card Typography Options */
+.rolling-card.font-handwriting .card-text { font-family: var(--font-handwriting); font-size: 1.5rem; line-height: 1.3; }
+.rolling-card.font-handwriting .card-author { font-family: var(--font-handwriting); font-size: 1.3rem; }
+
+.rolling-card.font-cute .card-text { font-family: var(--font-cute); font-size: 1.25rem; line-height: 1.4; }
+.rolling-card.font-cute .card-author { font-family: var(--font-cute); font-size: 1.15rem; }
+
+.rolling-card.font-round .card-text { font-family: var(--font-round); font-size: 1.15rem; line-height: 1.4; }
+.rolling-card.font-round .card-author { font-family: var(--font-round); font-size: 1.05rem; }
+
+.rolling-card.font-gothic .card-text { font-family: var(--font-sans); font-size: 1rem; font-weight: 600; line-height: 1.5; }
+.rolling-card.font-gothic .card-author { font-family: var(--font-sans); font-size: 0.9rem; font-weight: 800; }
+
+.card-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.card-text {
+  width: 100%;
+  color: inherit;
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+}
+.card-footer {
+  text-align: right;
+  border-top: 1px dashed rgba(0,0,0,0.06);
+  padding-top: 0.5rem;
+}
+.card-author {
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+/* Emojis/Stickers in card */
+.card-stickers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+.placed-sticker {
+  position: absolute;
+  font-size: 1.6rem;
+  transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+}
+
+/* CARD THEMES DECLARATIONS */
+
+/* 1. Theme: Post-it */
+.card-postit {
+  border-radius: 2px; /* Classic flat edge */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+}
+.card-postit .tape-effect {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  width: 75px;
+  height: 22px;
+  background-color: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(1px);
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+/* 2. Theme: Chalkboard */
+.card-chalkboard {
+  border: 6px solid #825a2c; /* Wooden board boundary */
+  border-radius: 6px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 8px 16px rgba(0,0,0,0.15);
+  color: white !important;
+  background-color: #21352a !important; /* chalkboard green */
+  outline: 2px dashed rgba(255,255,255,0.15);
+  outline-offset: -8px;
+}
+.card-chalkboard .card-footer {
+  border-top-color: rgba(255,255,255,0.15);
+}
+.card-chalkboard .card-author {
+  color: #e2e8f0;
+}
+
+/* 3. Theme: Balloon */
+.card-balloon {
+  border-radius: 28px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  border: 2px solid rgba(0,0,0,0.03);
+}
+.card-balloon::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 40px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 15px solid currentColor; /* Matches background color programmatically */
+  filter: drop-shadow(0 4px 2px rgba(0,0,0,0.03));
+}
+
+/* 4. Theme: Ripped Notebook */
+.card-notebook {
+  border-radius: 4px;
+  background-image: 
+    linear-gradient(#f1f5f9 1px, transparent 1px),
+    linear-gradient(90deg, rgba(239, 68, 68, 0.15) 1px, transparent 1px);
+  background-size: 100% 24px, 100% 100%;
+  background-position: 0 12px, 32px 0;
+  border: 1px solid #cbd5e1;
+  border-left: 6px solid #94a3b8; /* Left binder ring strip */
+  box-shadow: 2px 8px 16px rgba(0,0,0,0.06);
+}
+.card-notebook .card-body {
+  padding-left: 20px; /* offset for red line margin */
+}
+
+/* 5. Theme: Neon Y2K */
+.card-neon {
+  background-color: #12131a !important;
+  border: 2px solid var(--neon-border, #00f2fe);
+  box-shadow: 0 0 12px var(--neon-shadow, rgba(0, 242, 254, 0.4)), inset 0 0 8px var(--neon-shadow, rgba(0, 242, 254, 0.2));
+  color: var(--neon-border, #00f2fe) !important;
+}
+.card-neon .card-footer {
+  border-top-color: rgba(255,255,255,0.1);
+}
+.card-neon .card-author {
+  color: white;
+}
+.card-neon .card-text {
+  text-shadow: 0 0 5px var(--neon-shadow, rgba(0, 242, 254, 0.6));
+}
+
+
+/* ==========================================================================
+   👨‍🏫 TEACHER/HOST DISPLAY SCREEN (host.html)
+   ========================================================================== */
+.host-body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  transition: background 0.8s ease;
+}
+
+/* HOST BACKGROUND THEMES */
+
+/* A. Theme: Chalkboard Display Board */
+.host-body.theme-chalkboard {
+  background: radial-gradient(circle, #2d4538 0%, #1e2c24 100%);
+  border: 24px solid #573b1f; /* Big thick wooden room border */
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
+}
+.host-body.theme-chalkboard .board-texture {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.host-body.theme-chalkboard #active-question-display {
+  color: #fffdec;
+  font-family: var(--font-cute);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* B. Theme: Corkboard Display Board */
+.host-body.theme-corkboard {
+  background-color: #d1a87b;
+  background-image: 
+    radial-gradient(#b08053 15%, transparent 16%),
+    radial-gradient(#b08053 15%, transparent 16%);
+  background-size: 12px 12px;
+  background-position: 0 0, 6px 6px;
+  border: 24px solid #664322;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+}
+.host-body.theme-corkboard #active-question-display {
+  color: #271a0c;
+  font-family: var(--font-round);
+  background-color: rgba(255,255,255,0.85);
+  padding: 0.6rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+/* C. Theme: Outer Space Display Board */
+.host-body.theme-space {
+  background: radial-gradient(circle at center, #1b163a 0%, #080614 100%);
+  border: 10px solid #1a1b2f;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
+}
+.host-body.theme-space .board-texture {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: 
+    radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+    radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
+  background-size: 550px 550px, 350px 350px;
+  background-position: 0 0, 40px 60px;
+  pointer-events: none;
+  opacity: 0.4;
+  animation: space-pan 60s linear infinite;
+}
+@keyframes space-pan {
+  from { background-position: 0 0, 40px 60px; }
+  to { background-position: 550px 550px, 390px 410px; }
+}
+.host-body.theme-space #active-question-display {
+  color: #00f2fe;
+  font-family: var(--font-sans);
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.7);
+}
+
+/* D. Theme: Pink Notepad Display Board */
+.host-body.theme-pink {
+  background-color: #ffd6e8;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.6) 1px, transparent 1px);
+  background-size: 20px 20px;
+  border: 20px solid #fbcfe8;
+  box-shadow: inset 0 0 25px rgba(219, 39, 119, 0.1);
+}
+.host-body.theme-pink #active-question-display {
+  color: #db2777;
+  font-family: var(--font-cute);
+  background-color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(219, 39, 119, 0.1);
+}
+
+/* Presentation Screen Container */
+.board-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+}
+
+.board-header {
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+#active-question-display {
+  font-size: 1.85rem;
+  font-weight: 800;
+  max-width: 60vw;
+  line-height: 1.3;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Info Cards in Header */
+.join-info-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 0.45rem 1rem;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.join-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+}
+.join-pin {
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: 2px;
+  line-height: 1;
+  margin-top: 0.1rem;
+}
+
+.stats-badge {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 0.45rem 1rem;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  border: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.stats-badge span {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 700;
+}
+.stats-badge strong {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--neutral-dark);
+  line-height: 1;
+}
+
+.btn-control-toggle {
+  background: white;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--neutral-dark);
+  padding: 0.85rem 1.25rem;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s;
+}
+.btn-control-toggle:hover {
+  background-color: var(--neutral-light);
+  transform: scale(1.05);
+}
+
+/* Card Board Canvas */
+.board-canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.empty-board-msg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: rgba(255,255,255,0.55);
+  z-index: 1;
+  max-width: 420px;
+}
+.theme-corkboard .empty-board-msg, 
+.theme-pink .empty-board-msg {
+  color: rgba(0,0,0,0.4);
+}
+.empty-icon {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+  animation: logo-bounce 3s ease-in-out infinite;
+}
+.empty-board-msg h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+.empty-board-msg p {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* Absolute Floating Card Styling on Host */
+.board-canvas .rolling-card {
+  position: absolute;
+  z-index: 5;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+/* Lifted Card during drag */
+.board-canvas .rolling-card.dragging {
+  z-index: 100 !important;
+  transform: scale(1.06) rotate(3deg) !important;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  transition: none;
+}
+
+/* Card Controls (Delete icon) on Host Card */
+.card-delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(255, 71, 87, 0.1);
+  color: var(--danger);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s;
+  z-index: 15;
+}
+.rolling-card:hover .card-delete-btn {
+  opacity: 1;
+}
+.card-delete-btn:hover {
+  background-color: var(--danger);
+  color: white;
+}
+
+/* Floating Card Toolbar */
+.board-toolbar {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50px;
+  box-shadow: var(--shadow-lg);
+}
+.toolbar-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #cbd5e1;
+}
+.toolbar-label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #64748b;
+  margin-right: 0.25rem;
+}
+.theme-select-btn {
+  border: 1px solid #cbd5e1;
+  background-color: white;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.theme-select-btn:hover {
+  background-color: var(--neutral-light);
+}
+.theme-select-btn.active {
+  background-color: var(--neutral-dark);
+  color: white;
+  border-color: var(--neutral-dark);
+}
+.toolbar-action-btn {
+  border: none;
+  background: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--neutral-dark);
+  cursor: pointer;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+}
+.toolbar-action-btn:hover {
+  background-color: var(--neutral-light);
+}
+
+/* 5. Right Slide-In Control Panel */
+.control-panel {
+  width: 360px;
+  height: 100vh;
+  background-color: white;
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+.control-panel.closed {
+  transform: translateX(100%);
+  margin-right: -360px;
+}
+.panel-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.panel-header h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+.btn-close-panel {
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+}
+.btn-close-panel:hover { color: var(--neutral-dark); }
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.50rem;
+}
+.panel-section h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #475569;
+}
+.panel-section h3 small {
+  font-weight: 500;
+  color: #94a3b8;
+}
+.join-url-instruction {
+  background-color: var(--neutral-light);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  word-break: break-all;
+  border: 1px dashed #cbd5e1;
+}
+
+.add-question-form {
+  display: flex;
+  gap: 0.5rem;
+}
+.add-question-form input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+}
+.add-question-form input:focus { border-color: var(--primary); }
+
+/* Question list selections */
+.question-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.question-item {
+  padding: 0.85rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.question-item:hover {
+  background-color: var(--neutral-light);
+}
+.question-item.active {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.border-top {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.25rem;
+}
+
+/* ==========================================================================
+   🔍 HIGHLIGHT ZOOM MODAL
+   ========================================================================== */
+.zoom-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  animation: fadeIn 0.3s forwards;
+}
+
+.particle-canvas {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 510;
+}
+
+.zoom-container {
+  z-index: 520;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Zoomed Card Scale */
+.zoom-container .rolling-card {
+  transform: scale(1.6) rotate(0deg) !important;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+  cursor: default;
+  /* Disable inner interactions or dragging in modal */
+  pointer-events: auto;
+}
+.zoom-container .card-delete-btn {
+  display: none !important; /* Hide delete button in zoom view */
+}
+
+/* When zoomed card is neon, make the text shine brighter */
+.zoom-container .card-neon .card-text {
+  text-shadow: 0 0 10px var(--neon-shadow, rgba(0, 242, 254, 0.8)), 0 0 20px var(--neon-shadow, rgba(0, 242, 254, 0.4));
+}
+
+.zoom-close-hint {
+  position: absolute;
+  bottom: 8%;
+  color: rgba(255,255,255,0.6);
+  font-size: 1rem;
+  letter-spacing: 1px;
+  z-index: 520;
+  animation: pulse-hint 2s infinite;
+}
+@keyframes pulse-hint {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
