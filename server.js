@@ -205,6 +205,18 @@ io.on('connection', (socket) => {
 
     callback({ success: true, response: newResponse });
     console.log(`Room ${code} Question ${qIndex} received response from ${newResponse.nickname}`);
+
+    // Real-time Sync to Google Sheets if a Web App URL is configured
+    if (room.sheetUrl) {
+      forwardToGoogleSheet(room.sheetUrl, {
+        roomCode: code,
+        question: activeQuestion.text,
+        nickname: newResponse.nickname,
+        content: newResponse.content,
+        theme: newResponse.theme,
+        createdAt: newResponse.createdAt
+      });
+    }
   });
 
   // 6. Update Card Position (Host dragging notes)
@@ -258,11 +270,79 @@ io.on('connection', (socket) => {
     }
   });
 
+  // 9. Update Google Sheet Web App URL (Host settings)
+  socket.on('update-sheet-url', (sheetUrl, callback) => {
+    const code = socket.roomCode;
+    if (code && rooms[code] && socket.isHost) {
+      rooms[code].sheetUrl = sheetUrl.trim();
+      saveDb();
+      if (callback) callback({ success: true });
+      console.log(`Room ${code} sheet Web App URL updated: ${sheetUrl}`);
+    } else {
+      if (callback) callback({ success: false, error: '권한이 없거나 방을 찾을 수 없습니다.' });
+    }
+  });
+
   // Disconnect logic
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
   });
 });
+
+// Helper: Forward data to Google Sheets Apps Script Web App
+async function forwardToGoogleSheet(url, data) {
+  try {
+    if (typeof fetch !== 'undefined') {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        redirect: 'follow'
+      });
+      console.log(`Google Sheets forward status via fetch: ${response.status}`);
+    } else {
+      // Node < 18 fallback (using standard https module)
+      const https = require('https');
+      const urlModule = require('url');
+      const parsedUrl = urlModule.parse(url);
+      const postData = JSON.stringify(data);
+
+      const options = {
+        hostname: parsedUrl.hostname,
+        port: parsedUrl.port || (parsedUrl.protocol === 'https:' ? 443 : 80),
+        path: parsedUrl.path,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData)
+        }
+      };
+
+      const req = https.request(options, (res) => {
+        // Handle redirection for Google Apps Script Web App redirects (302 Found)
+        if (res.statusCode === 302 || res.statusCode === 301 || res.statusCode === 307) {
+          const redirectUrl = res.headers.location;
+          if (redirectUrl) {
+            forwardToGoogleSheet(redirectUrl, data);
+          }
+          return;
+        }
+        console.log(`Google Sheets forward status via https: ${res.statusCode}`);
+      });
+
+      req.on('error', (err) => {
+        console.error('Google Sheets forward error:', err.message);
+      });
+
+      req.write(postData);
+      req.end();
+    }
+  } catch (err) {
+    console.error('Error forwarding to Google Sheet URL:', err.message);
+  }
+}
 
 // Start Server
 server.listen(PORT, () => {

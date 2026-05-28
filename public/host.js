@@ -150,6 +150,14 @@ function setupSocketListeners() {
           changeBoardTheme(roomData.theme, false); // change class, don't emit
         }
         
+        // Populate existing Google Sheet URL if set
+        if (roomData.sheetUrl) {
+          const sheetInput = document.getElementById('sheet-url-input');
+          if (sheetInput) {
+            sheetInput.value = roomData.sheetUrl;
+          }
+        }
+        
         // Render state
         renderActiveQuestion();
         renderQuestionList();
@@ -925,4 +933,58 @@ function confirmClearBoard() {
       console.log('Cleared all responses on board.');
     });
   }
+}
+
+// Google Sheets Google Apps Script Integration
+const APPS_SCRIPT_TEMPLATE = `function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  
+  // 첫 데이터 저장 시 헤더 행(제목)을 자동 생성합니다
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["기록일시", "방 코드", "질문 내용", "닉네임", "답변 메시지", "선택 테마"]);
+  }
+  
+  // 데이터 기록
+  sheet.appendRow([
+    new Date(),
+    data.roomCode,
+    data.question,
+    data.nickname,
+    data.content,
+    data.theme
+  ]);
+  
+  return ContentService.createTextOutput(JSON.stringify({ success: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}`;
+
+function copyAppsScriptCode() {
+  navigator.clipboard.writeText(APPS_SCRIPT_TEMPLATE).then(() => {
+    alert('구글 앱스 스크립트 코드가 복사되었습니다! 🎉\\n\\n[구글 스프레드시트 적용 방법]\\n1. 구글 스프레드시트를 열고 상단 메뉴의 [확장 프로그램] -> [Apps Script]를 클릭합니다.\\n2. 기존 편집창에 쓰인 모든 코드를 지우고, 복사한 코드를 붙여넣습니다.\\n3. 상단 [배포] -> [새 배포] 버튼을 누릅니다.\\n4. 유형은 [웹 앱]으로 설정하고, 액세스 권한은 반드시 [모든 사용자(Anyone)]로 선택해 배포합니다.\\n5. 배포 완료 후 제공되는 "웹 앱 URL"을 복사하여 아래 입력창에 넣고 [연결]을 눌러주세요.');
+  }).catch(err => {
+    console.error('클립보드 복사 실패:', err);
+    alert('클립보드 복사에 실패했습니다. 관리자 안내 코드를 수동으로 복사해서 사용해 주세요.');
+  });
+}
+
+function saveSheetUrl() {
+  const sheetUrl = document.getElementById('sheet-url-input').value.trim();
+  
+  if (!socket || !socket.connected) {
+    alert('서버와 실시간 연결이 활성화되어 있지 않습니다. 서버가 실행 중인지 확인하세요.');
+    return;
+  }
+
+  socket.emit('update-sheet-url', sheetUrl, (res) => {
+    if (res.success) {
+      if (sheetUrl) {
+        alert('구글 스프레드시트 연동 URL이 성공적으로 저장되었습니다! 📊\\n이제 학생들이 보내는 답변이 구글 시트에 실시간으로 기록됩니다.');
+      } else {
+        alert('구글 스프레드시트 연동이 해제되었습니다.');
+      }
+    } else {
+      alert(res.error || '연동 URL 저장에 실패했습니다.');
+    }
+  });
 }
